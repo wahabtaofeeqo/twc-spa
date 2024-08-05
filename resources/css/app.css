@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.text-color {
+    color: #A303A0;
+}
+
+.text-light {
+    color: #DF6951;
+}
+
+.bg-color {
+    background-color: #A303A0;
+}
+
+.decore {
+    background-image: url(/images/);
+    background-position: top right;
+    background-repeat: no-repeat;
+}
+
+.main {
+    background-image: url(/images/face.png);
+    background-position: right;
+    background-repeat: no-repeat;
+    height: 700px;
+}
+
+@media screen and (max-width: 600px) {
+    .main {
+        background-image: none;
+    }
+}
