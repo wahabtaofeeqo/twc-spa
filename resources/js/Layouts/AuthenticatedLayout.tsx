@@ -4,7 +4,7 @@ import Dropdown from '@/Components/Dropdown';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
 
-export default function Authenticated({ auth, header, children, errors }) {
+export default function Authenticated({ auth, header, children, errors = null }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (
@@ -16,7 +16,7 @@ export default function Authenticated({ auth, header, children, errors }) {
                             <Link href="/" className='pr-2'>
                                 <ApplicationLogo className="block h-8 w-auto fill-current" />
                             </Link>
-                            <strong>TaolSpa</strong>
+                            {/* <strong>TaolSpa</strong> */}
                         </div>
 
                         <Link href={route('dashboard')} className={(route().current('dashboard') ? 'border-l-4 border-sky-500' : '') + ' block mt-4 hover:bg-gray-700 hover:text-white px-3 py-3 text-sm font-medium'}>
@@ -25,8 +25,14 @@ export default function Authenticated({ auth, header, children, errors }) {
                         <Link href={route('users')} className={(route().current('users') ? 'border-l-4 border-sky-500' : '') + ' block hover:bg-gray-700 hover:text-white px-3 py-3 text-sm font-medium'}>
                             <i className='fa-solid fa-users mr-2'></i> Customers
                         </Link>
+                        <Link href={route('outlets')} className={(route().current('outlets') ? 'border-l-4 border-sky-500' : '') + ' block hover:bg-gray-700 hover:text-white px-3 py-3 text-sm font-medium'}>
+                            <i className="fas fa-user-tie mr-2"></i> Outlets
+                        </Link>
                         <Link href={route('admins')} className={(route().current('admins') ? 'border-l-4 border-sky-500' : '') + ' block hover:bg-gray-700 hover:text-white px-3 py-3 text-sm font-medium'}>
                             <i className="fas fa-user-tie mr-2"></i> Admins
+                        </Link>
+                        <Link href={route('scans')} className={(route().current('scans') ? 'border-l-4 border-sky-500' : '') + ' block hover:bg-gray-700 hover:text-white px-3 py-3 text-sm font-medium'}>
+                            <i className="fas fa-user-tie mr-2"></i> Scan
                         </Link>
                     </div>
 
@@ -46,7 +52,7 @@ export default function Authenticated({ auth, header, children, errors }) {
                                 <Link href="/" className='pr-2'>
                                     <ApplicationLogo className="block h-8 w-auto fill-current" />
                                 </Link>
-                                <strong>Goodbeach</strong>
+                                {/* <strong>Goodbeach</strong> */}
                             </div>
 
                             <div className="hidden sm:flex sm:items-center sm:ml-6">
@@ -117,6 +123,9 @@ export default function Authenticated({ auth, header, children, errors }) {
                             </ResponsiveNavLink>
                             <ResponsiveNavLink href={route('users')} active={route().current('users')}>
                                 Users
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink href={route('outlets')} active={route().current('outlets')}>
+                                Outlets
                             </ResponsiveNavLink>
                             <ResponsiveNavLink href={route('admins')} active={route().current('admins')}>
                                 Admins

@@ -13,7 +13,9 @@ export default function CreateUserForm({onCreated, user}) {
         email: '',
         phone: '',
         category: '',
-        code: ''
+        code: '',
+        card: '',
+        amount: 0
     });
 
     const onHandleChange = (event) => {
@@ -92,39 +94,72 @@ export default function CreateUserForm({onCreated, user}) {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel value="Category" />
+                    <InputLabel value="Card Type" />
                     <SelectInput
-                        id="category"
-                        name="category"
-                        value={data.category}
+                        id="card"
+                        name="card"
+                        value={data.card}
                         className="mt-1 block w-full"
                         onChange={onHandleChange}
                         required
-                        options={['Gold', 'Silver', 'Platinum']}
+                        options={['Gift', 'Membership']}
                     />
 
-                    <InputError message={errors.category} className="mt-2" />
+                    <InputError message={errors.card} className="mt-2" />
                 </div>
 
                 {
-                    user &&
+                    data.card == 'Gift' &&
                         <div className="mt-4">
-                           <InputLabel value="Code" />
+                           <InputLabel value="Amout" />
                             <TextInput
-                                id="code"
-                                name="code"
-                                value={data.code}
+                                id="amount"
+                                name="amount"
+                                value={data.amount}
                                 className="mt-1 block w-full"
                                 onChange={onHandleChange}
                                 required
                             />
 
-                            <InputError message={errors.code} className="mt-2" />
+                            <InputError message={errors.amount} className="mt-2" />
                         </div>
                 }
 
-                <div className="flex items-center justify-end mt-4">
-                    <PrimaryButton className="ml-4 bg-sky-500" disabled={processing}>
+                {
+                    data.card == 'Membership' && (
+                        <div className="mt-4">
+                            <InputLabel value="Category" />
+                            <SelectInput
+                                id="category"
+                                name="category"
+                                value={data.category}
+                                className="mt-1 block w-full"
+                                onChange={onHandleChange}
+                                required
+                                options={['Gold', 'Silver', 'Platinum']}
+                            />
+
+                            <InputError message={errors.category} className="mt-2" />
+                        </div>
+                    )
+                }
+
+                <div className="mt-4">
+                    <InputLabel value="Code" />
+                    <TextInput
+                        id="code"
+                        name="code"
+                        value={data.code}
+                        className="mt-1 block w-full"
+                        onChange={onHandleChange}
+                        required
+                    />
+
+                    <InputError message={errors.code} className="mt-2" />
+                </div>
+
+                <div className="flex items-center justify-end mt-10">
+                    <PrimaryButton className="ml-4 bg-amber-500" disabled={processing}>
                         {user ? 'Update' : 'Add Member'}
                     </PrimaryButton>
                 </div>

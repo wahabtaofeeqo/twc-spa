@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use Carbon\Carbon;
+use Spatie\Permission\Models\Role;
+use App\Models\Card;
 
 class RegisteredUserController extends Controller
 {
@@ -31,21 +34,83 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
+            'code' => 'required|integer',
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'card' => 'required|in:Gift,Membership',
+            'amount' => 'required_if:card,Gift|integer',
+            'email' => 'required|string|email|max:255|unique:'.User::class,
+            'phone' => 'required|string|max:13|min:11|unique:'.User::class,
+            'category' => 'required_if:card,Membership|in:' . join(',', User::$categories),
+        ]);
+
+        $card = Card::where('type', $request->card)
+            ->where('code', $request->code)->first();
+
+        if($card) {
+            return redirect()->back()->withErrors(['code' => 'Code is taken already']);
+        }
+
+        $date = Carbon::now()->addYear();
+        // $number = User::genCode($request->category);
+
+        $payload = $request->all();
+        $isMembership = $payload['card'] == 'Membership';
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'category' => $request->category,
+            'password' => Hash::make($request->phone),
+        ]);
+
+        $role = Role::where(['name' => 'customer']);
+        $user->assignRole($role);
+
+        // Card
+        Card::create([
+            'user_id' => $user->id,
+            'code' => $payload['code'],
+            'type' => $payload['card'],
+            'expired_at' => $isMembership ? $date : null,
+            'amount' => $isMembership ? 0 : $payload['amount'],
+        ]);
+
+        //
+        event(new Registered($user));
+
+        //
+        return back()->with([
+            'message' => 'Account created successfully',
+        ]);
+    }
+
+    /**
+     * Handle an incoming registration request.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function storeAdmin(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:'.User::class,
+            'phone' => 'required|string|max:13|min:11|unique:'.User::class
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+            'password' => Hash::make($request->phone),
         ]);
 
-        event(new Registered($user));
+        $role = Role::where(['name' => 'admin']);
+        $user->assignRole($role);
 
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        //
+        return back()->with([
+            'message' => 'Account created successfully',
+        ]);
     }
 }

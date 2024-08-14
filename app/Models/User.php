@@ -19,9 +19,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'name', 'email', 'password', 'expired_at',
+        'phone', 'category', 'type', 'code', 'status'
     ];
 
     /**
@@ -72,5 +71,31 @@ class User extends Authenticatable
         }
 
         return $role->first();
+    }
+
+    public static function genCode($category) {
+
+        $year = date('Y');
+        $index = array_search($category, self::$categories) + 1;
+
+        // Due to mistake during the card creation
+        $isIn = in_array($category, [self::GOLD, self::SILVER]);
+
+        $middleNumber = ($isIn ? 1 : $index) . "02" . $index;
+        $number = User::where('category', $category)->count();
+        $number = str_pad(strval($number + 1), 4, "0", STR_PAD_LEFT);
+
+        //
+        return $year . $middleNumber . $number;
+    }
+
+    /**
+     * Get the card associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function card()
+    {
+        return $this->hasOne(Card::class);
     }
 }
