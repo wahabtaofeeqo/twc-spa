@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Card;
+use Illuminate\Http\RedirectResponse;
 
 class ScanController extends Controller
 {
@@ -25,24 +27,56 @@ class ScanController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function scan(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
-            'address' => 'required|string',
-            'email' => 'required|exists:'.User::class
+            'card' => 'required|string|in:Gift,Membership',
+            'code' => 'required|integer|exists:cards,code',
         ]);
 
-        $user = User::where('email', $request->email)->first();
-        $payload = $request->all();
-        $payload['user_id'] = $user->id;
+        $card = Card::where('type', $request->card)
+            ->where('code', $request->code)->with('user')->first();
 
-        unset($payload['email']);
-        Outlet::create($payload);
+        if(!$card) {
+            return response()->json([
+                'message' => 'Card not recognized'
+            ], 404);
+        }
 
         //
-        return back()->with([
+        return response()->json([
+            'card' => $card,
             'message' => 'Created successfully',
+        ]);
+    }
+
+     /**
+     * Handle an incoming registration request.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function charge(Request $request)
+    {
+        $request->validate([
+            'price' => 'required|numeric',
+            'card_id' => 'required|integer|exists:cards,id',
+        ]);
+
+        $amount = $request->price;
+        $card = Card::find($request->card_id);
+        if($amount > $card->amount || $card->amount - $amount < 0) {
+            return response()->json([
+                'message' => 'Insufficient Balance'
+            ], 400);
+        }
+
+        $card->amount = $card->amount - $amount;
+        $card->save();
+
+        //
+        return response()->json([
+            'card' => $card,
+            'message' => 'Charged successfully',
         ]);
     }
 }

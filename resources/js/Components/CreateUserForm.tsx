@@ -160,7 +160,7 @@ export default function CreateUserForm({onCreated, user}) {
 
                 <div className="flex items-center justify-end mt-10">
                     <PrimaryButton className="ml-4 bg-amber-500" disabled={processing}>
-                        {user ? 'Update' : 'Add Member'}
+                        {user ? 'Update' : 'Create'}
                     </PrimaryButton>
                 </div>
             </form>

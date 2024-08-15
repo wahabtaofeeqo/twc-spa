@@ -25,14 +25,19 @@ export default function Authenticated({ auth, header, children, errors = null })
                         <Link href={route('users')} className={(route().current('users') ? 'border-l-4 border-sky-500' : '') + ' block hover:bg-gray-700 hover:text-white px-3 py-3 text-sm font-medium'}>
                             <i className='fa-solid fa-users mr-2'></i> Customers
                         </Link>
-                        <Link href={route('outlets')} className={(route().current('outlets') ? 'border-l-4 border-sky-500' : '') + ' block hover:bg-gray-700 hover:text-white px-3 py-3 text-sm font-medium'}>
-                            <i className="fas fa-user-tie mr-2"></i> Outlets
-                        </Link>
-                        <Link href={route('admins')} className={(route().current('admins') ? 'border-l-4 border-sky-500' : '') + ' block hover:bg-gray-700 hover:text-white px-3 py-3 text-sm font-medium'}>
-                            <i className="fas fa-user-tie mr-2"></i> Admins
-                        </Link>
+
+                       {
+                        auth?.role?.includes('super admin') && <>
+                            <Link href={route('outlets')} className={(route().current('outlets') ? 'border-l-4 border-sky-500' : '') + ' block hover:bg-gray-700 hover:text-white px-3 py-3 text-sm font-medium'}>
+                                <i className="fa-solid fa-shop mr-2"></i> Outlets
+                            </Link>
+                            <Link href={route('admins')} className={(route().current('admins') ? 'border-l-4 border-sky-500' : '') + ' block hover:bg-gray-700 hover:text-white px-3 py-3 text-sm font-medium'}>
+                                <i className="fas fa-user-tie mr-2"></i> Admins
+                            </Link>
+                        </>
+                       }
                         <Link href={route('scans')} className={(route().current('scans') ? 'border-l-4 border-sky-500' : '') + ' block hover:bg-gray-700 hover:text-white px-3 py-3 text-sm font-medium'}>
-                            <i className="fas fa-user-tie mr-2"></i> Scan
+                            <i className="fa-regular fa-id-card mr-2"></i> Scan
                         </Link>
                     </div>
 
@@ -63,7 +68,7 @@ export default function Authenticated({ auth, header, children, errors = null })
                                                 <button
                                                     type="button"
                                                     className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                                    {auth.user.name}
+                                                    {auth?.user?.name}
 
                                                     <svg
                                                         className="ml-2 -mr-0.5 h-4 w-4"
@@ -122,22 +127,29 @@ export default function Authenticated({ auth, header, children, errors = null })
                                 Dashboard
                             </ResponsiveNavLink>
                             <ResponsiveNavLink href={route('users')} active={route().current('users')}>
-                                Users
+                                Customers
                             </ResponsiveNavLink>
-                            <ResponsiveNavLink href={route('outlets')} active={route().current('outlets')}>
-                                Outlets
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink href={route('admins')} active={route().current('admins')}>
-                                Admins
+                            {
+                                auth?.role?.includes('super admin') && <>
+                                    <ResponsiveNavLink href={route('outlets')} active={route().current('outlets')}>
+                                        Outlets
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink href={route('admins')} active={route().current('admins')}>
+                                        Admins
+                                    </ResponsiveNavLink>
+                                </>
+                            }
+                             <ResponsiveNavLink href={route('scans')} active={route().current('scans')}>
+                                Scan
                             </ResponsiveNavLink>
                         </div>
 
                         <div className="pt-4 pb-1 border-t border-gray-200">
                             <div className="px-4">
                                 <div className="font-medium text-base text-gray-800">
-                                    {auth.user.name}
+                                    {auth?.user?.name}
                                 </div>
-                                <div className="font-medium text-sm text-gray-500">{auth.user.email}</div>
+                                <div className="font-medium text-sm text-gray-500">{auth?.user?.email}</div>
                             </div>
 
                             <div className="mt-3 space-y-1">

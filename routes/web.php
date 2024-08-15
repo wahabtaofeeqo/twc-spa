@@ -20,11 +20,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Scanning
     Route::get('scans', 'ScanController@index')->name('scans');
-    Route::post('scans', 'ScanController@store')->name('scans.create');
 
-    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/create-user', 'Auth\RegisteredUserController@store')->name('user.create');
     Route::post('/create-admin', 'Auth\RegisteredUserController@storeAdmin')->name('admin.create');
 });

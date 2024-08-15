@@ -7,6 +7,8 @@ import { useState } from 'react';
 
 export default function Dashboard({auth, users, usersCount, expiredCount, outletCount, userStats}) {
 
+    console.log(auth);
+
     // let users = props.users || [];
     // let userStats = props.userStats;
     // let usersCount = props.usersCount || 0;
@@ -40,7 +42,7 @@ export default function Dashboard({auth, users, usersCount, expiredCount, outlet
             <Head title="Dashboard" />
             <Modal show={modalToggle} onClose={() => onCreated()}>
                 <div className='p-4'>
-                    <h1 className='mb-4'>Add a new Member to the club</h1>
+                    <h1 className='mb-4 text-lg font-black'>Create a new Profile</h1>
                     <CreateUserForm onCreated={onCreated} user={user}></CreateUserForm>
                 </div>
             </Modal>
@@ -135,7 +137,7 @@ export default function Dashboard({auth, users, usersCount, expiredCount, outlet
                     <div className="bg-white overflow-hidden shadow-sm mx-4 lg:mx-0 rounded">
                         <div className="p-3 text-gray-900 flex justify-between items-center">
                             <h1>Latest Users</h1>
-                            <DangerButton className='bg-amber-500' onClick={() => setModalToggle(!modalToggle)}>New Customer</DangerButton>
+                            <DangerButton className='bg-amber-500' onClick={() => setModalToggle(!modalToggle)}>New User</DangerButton>
                         </div>
                         <div className="relative overflow-x-auto">
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">

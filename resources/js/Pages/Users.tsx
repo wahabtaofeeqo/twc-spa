@@ -43,7 +43,7 @@ export default function Users({auth, users, userStats, expiredCount, usersCount}
             <Head title="Users" />
             <Modal show={modalToggle} onClose={() => onCreated()}>
                 <div className='p-4'>
-                    <h1 className='mb-4 text-2xl font-black'>Create a new Profile</h1>
+                    <h1 className='mb-4 text-xl font-black'>Create a new Profile</h1>
                     <CreateUserForm onCreated={onCreated} user={user}></CreateUserForm>
                 </div>
             </Modal>
@@ -128,7 +128,7 @@ export default function Users({auth, users, userStats, expiredCount, usersCount}
                     <div className="bg-white overflow-hidden shadow-sm mx-4 lg:mx-0 rounded">
                         <div className="p-3 text-gray-900 flex justify-between items-center">
                             <h1>All Users</h1>
-                            <DangerButton className='bg-amber-500' onClick={() => setModalToggle(!modalToggle)}>New Member</DangerButton>
+                            <DangerButton className='bg-amber-500' onClick={() => setModalToggle(!modalToggle)}>New User</DangerButton>
                         </div>
                         <div className="relative overflow-x-auto">
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
