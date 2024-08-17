@@ -8,4 +8,3 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('scans', 'ScanController@scan')->name('scans.scan');
-Route::post('charge', 'ScanController@charge')->name('charge');

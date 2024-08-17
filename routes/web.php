@@ -20,7 +20,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Scanning
     Route::get('scans', 'ScanController@index')->name('scans');
+    Route::post('charge', 'ScanController@charge')->name('charge');
 
+    // Transaction
+    Route::get('transactions', 'TransactionController@index')->name('transactions');
+
+    //
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

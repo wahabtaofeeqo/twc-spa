@@ -136,11 +136,17 @@ export default function Users({auth, users, userStats, expiredCount, usersCount}
                                     <tr>
                                         <th scope="col" className="px-6 py-3">#</th>
                                         <th scope="col" className="px-6 py-3">Name</th>
-                                        <th scope="col" className="px-6 py-3">Email</th>
+                                        {/* <th scope="col" className="px-6 py-3">Email</th> */}
                                         <th scope="col" className="px-6 py-3">Phone</th>
-                                        <th scope="col" className="px-6 py-3">Code</th>
+                                        {/* <th scope="col" className="px-6 py-3">Code</th> */}
                                         <th scope="col" className="px-6 py-3">Type</th>
-                                        <th scope="col" className="px-6 py-3">Action</th>
+                                        <th scope="col" className="px-6 py-3">Category</th>
+                                        {
+                                            auth?.role?.includes('super admin') && (
+                                                <th scope="col" className="px-6 py-3">Action</th>
+                                            )
+                                        }
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -148,22 +154,22 @@ export default function Users({auth, users, userStats, expiredCount, usersCount}
                                         users.data.map((user, index) => {
                                             return (
                                                 <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
-                                                    <td className="px-6 py-4"> {index + 1} </td>
-                                                    <td className="px-6 py-4"> {user.name} </td>
-                                                    <td className="px-6 py-4"> {user.email} </td>
+                                                    <td className="px-6 py-4">{index + 1}</td>
+                                                    <td className="px-6 py-4">{user.name}</td>
+                                                    {/* <td className="px-6 py-4"> {user.email} </td> */}
                                                     <td className="px-6 py-4"> {user.phone} </td>
-                                                    <td className="px-6 py-4"> {user.card?.code || 'NA'} </td>
-                                                    <td className="px-6 py-4">
-                                                        {user.card?.type || 'NA'}
-                                                        {/* <span className={getStatus(user.card?.expired_at) == 'Active' ? 'text-green-500' : 'text-red-500'}>
-                                                            {getStatus(user.card?.expired_at)}
-                                                       </span> */}
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <button onClick={() => onClick(user, true)} className={'bg-sky-500 px-2 py-1 text-white rounded'}>
-                                                            <i className="fa-solid fa-user-pen"></i>
-                                                        </button>
-                                                    </td>
+                                                    {/* <td className="px-6 py-4"> {user.card?.code || 'NA'} </td> */}
+                                                    <td className="px-6 py-4">{user.card?.type}</td>
+                                                    <td className="px-6 py-4">{user.category || 'NA'}</td>
+                                                    {
+                                                        auth?.role?.includes('super admin') && (
+                                                            <td className="px-6 py-4">
+                                                                <button onClick={() => onClick(user)} className={'bg-sky-500 px-2 py-1 text-white rounded'}>
+                                                                    <i className="fa-solid fa-user-pen"></i>
+                                                                </button>
+                                                            </td>
+                                                        )
+                                                    }
                                                 </tr>
                                             )
                                         })

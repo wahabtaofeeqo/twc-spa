@@ -7,14 +7,6 @@ import { useState } from 'react';
 
 export default function Dashboard({auth, users, usersCount, expiredCount, outletCount, userStats}) {
 
-    console.log(auth);
-
-    // let users = props.users || [];
-    // let userStats = props.userStats;
-    // let usersCount = props.usersCount || 0;
-    // let adminsCount = props.adminsCount || 0;
-    // let expiredCount = props.expiredCount || 0;
-
     let [user, setUser] = useState(null);
     const [modalToggle, setModalToggle] = useState(false);
 
@@ -145,11 +137,17 @@ export default function Dashboard({auth, users, usersCount, expiredCount, outlet
                                     <tr>
                                         <th scope="col" className="px-6 py-3">#</th>
                                         <th scope="col" className="px-6 py-3">Name</th>
-                                        <th scope="col" className="px-6 py-3">Email</th>
+                                        {/* <th scope="col" className="px-6 py-3">Email</th> */}
                                         <th scope="col" className="px-6 py-3">Phone</th>
-                                        <th scope="col" className="px-6 py-3">Code</th>
+                                        {/* <th scope="col" className="px-6 py-3">Code</th> */}
                                         <th scope="col" className="px-6 py-3">Type</th>
-                                        <th scope="col" className="px-6 py-3">Action</th>
+                                        <th scope="col" className="px-6 py-3">Category</th>
+                                        {
+                                            auth?.role?.includes('super admin') && (
+                                                <th scope="col" className="px-6 py-3">Action</th>
+                                            )
+                                        }
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -159,20 +157,20 @@ export default function Dashboard({auth, users, usersCount, expiredCount, outlet
                                                 <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
                                                     <td className="px-6 py-4">{index + 1}</td>
                                                     <td className="px-6 py-4">{user.name}</td>
-                                                    <td className="px-6 py-4"> {user.email} </td>
+                                                    {/* <td className="px-6 py-4"> {user.email} </td> */}
                                                     <td className="px-6 py-4"> {user.phone} </td>
-                                                    <td className="px-6 py-4"> {user.card?.code || 'NA'} </td>
-                                                    <td className="px-6 py-4">
-                                                        {user.card?.type || 'NA'}
-                                                       {/* <span className={getStatus(user.expired_at) == 'Active' ? 'text-green-500' : 'text-red-500'}>
-                                                            {getStatus(user.expired_at)}
-                                                       </span> */}
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <button onClick={() => onClick(user)} className={'bg-sky-500 px-2 py-1 text-white rounded'}>
-                                                            <i className="fa-solid fa-user-pen"></i>
-                                                        </button>
-                                                    </td>
+                                                    {/* <td className="px-6 py-4"> {user.card?.code || 'NA'} </td> */}
+                                                    <td className="px-6 py-4">{user.card?.type}</td>
+                                                    <td className="px-6 py-4">{user.category || 'NA'}</td>
+                                                    {
+                                                        auth?.role?.includes('super admin') && (
+                                                            <td className="px-6 py-4">
+                                                                <button onClick={() => onClick(user)} className={'bg-sky-500 px-2 py-1 text-white rounded'}>
+                                                                    <i className="fa-solid fa-user-pen"></i>
+                                                                </button>
+                                                            </td>
+                                                        )
+                                                    }
                                                 </tr>
                                             )
                                         })

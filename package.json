@@ -24,6 +24,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
-        "classnames": "^2.5.1"
+        "classnames": "^2.5.1",
+        "moment": "^2.30.1"
     }
 }

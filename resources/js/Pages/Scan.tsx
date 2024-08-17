@@ -8,11 +8,11 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import SelectInput from '@/Components/SelectInput';
 import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { useState } from 'react';
 
-export default function Scan({auth}) {
+export default function Scan({auth, csrf}) {
 
     const [card, setCard] = useState<any>(null);
     const [error, setError] = useState<any>('');
@@ -42,7 +42,7 @@ export default function Scan({auth}) {
         e.preventDefault();
         setProcessing(true);
 
-        axios.post(route('scans'), data).then(res => {
+        axios.post(route('scans.scan'), data).then(res => {
             setCard(res.data.card);
             setProcessing(false);
         }).catch(err => {
@@ -62,23 +62,48 @@ export default function Scan({auth}) {
             ...chargeData,
             card_id: card.id
         }
-        axios.post(route('charge'), payload).then(res => {
-            let updatedCard = {
-                ...card,
-                amount: card.amount - chargeData.price
+
+        let headers: any = {
+            'X-CSRF-TOKEN': csrf
+        }
+
+        router.post(route('charge'), payload, {
+            onSuccess: () => {
+                let updatedCard = {
+                    ...card,
+                    amount: card.amount - chargeData.price
+                }
+                setCard(updatedCard);
+                setMessage('Card successfully charged');
+                setTimeout(() => {
+                    reset();
+                    setCard(null);
+                    setCharging(false);
+                    setProcessing(false);
+                }, 5000);
+            },
+            onError: e => {
+                console.log(e);
             }
-            setCard(updatedCard);
-            setMessage('Card successfully charged');
-            setTimeout(() => {
-                reset();
-                setCard(null);
-                setCharging(false);
-                setProcessing(false);
-            }, 5000);
-        }).catch(err => {
-            setProcessing(false);
-            setError(err?.response?.data?.message || 'Something went wrong. Please try again');
-        })
+        });
+
+        // axios.post(route('charge'), payload, {headers}).then(res => {
+        //     let updatedCard = {
+        //         ...card,
+        //         amount: card.amount - chargeData.price
+        //     }
+        //     setCard(updatedCard);
+        //     setMessage('Card successfully charged');
+        //     setTimeout(() => {
+        //         reset();
+        //         setCard(null);
+        //         setCharging(false);
+        //         setProcessing(false);
+        //     }, 5000);
+        // }).catch(err => {
+        //     setProcessing(false);
+        //     setError(err?.response?.data?.message || 'Something went wrong. Please try again');
+        // })
     };
 
     return (
@@ -99,12 +124,22 @@ export default function Scan({auth}) {
                                 <div>
                                     <h4 className='text-lg mb-3 font-bold'>Card Details</h4>
                                     <p>Name: {card?.user?.name}</p>
+                                    <p>Phone: {card?.user?.phone}</p>
                                     <p>Type: {card?.type}</p>
-                                    <p>Validity: {card?.expired_at}</p>
-                                    <div className='flex gap-4'>
-                                        <p>Balance: ₦ {card?.amount}</p>
-                                        <a className='text-sky-500 cursor-pointer' onClick={() => setCharging(!isCharging)}>Charge Card</a>
-                                    </div>
+                                    {
+                                        card.type == 'Membership' && (
+                                            <p>Validity: {card?.expired_at}</p>
+                                        )
+                                    }
+
+                                    {
+                                        card.type == 'Gift' && (
+                                            <div className='flex gap-3 items-center'>
+                                                <p>Balance: ₦ {card?.amount}</p>
+                                                <a className='text-sky-500 cursor-pointer underline' onClick={() => setCharging(!isCharging)}>Charge Card</a>
+                                            </div>
+                                        )
+                                    }
                                 </div>
                             )
                         }
@@ -145,9 +180,12 @@ export default function Scan({auth}) {
                                     </div>
 
                                     <div className="flex items-center justify-end mt-10">
-                                        <PrimaryButton className="ml-4 bg-sky-500 px-10" disabled={processing}>
+                                        <button className='px-10 bg-amber-500 rounded p-2 text-white' disabled={processing}>
                                             Scan
-                                        </PrimaryButton>
+                                        </button>
+                                        {/* <PrimaryButton className="ml-4 bg-amber-500 px-10" disabled={processing}>
+                                            Scan
+                                        </PrimaryButton> */}
                                     </div>
                                 </form>
                             )
@@ -158,7 +196,6 @@ export default function Scan({auth}) {
                                 <form onSubmit={charge}>
                                     <div className="mt-4">
                                         <InputLabel value="Service Cost" />
-
                                         <TextInput
                                             id="price"
                                             type="number"
@@ -172,9 +209,12 @@ export default function Scan({auth}) {
                                     <p className='text-green-500'>{message}</p>
 
                                     <div className="flex items-center justify-end mt-4">
-                                        <PrimaryButton className="bg-amber-500 px-10" disabled={processing}>
+                                        <button className='px-10 bg-red-500 rounded p-2 text-white' disabled={processing}>
                                             Charge
-                                        </PrimaryButton>
+                                        </button>
+                                        {/* <PrimaryButton className="bg-amber-500 px-10" disabled={processing}>
+                                            Charge
+                                        </PrimaryButton> */}
                                     </div>
                                 </form>
 

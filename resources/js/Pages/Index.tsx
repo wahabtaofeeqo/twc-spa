@@ -16,17 +16,17 @@ const Index = () => {
                     <div>
                         <Link href={route('index')}
                             className="rounded-md font-bold px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
-                            <i className="fa-brands fa-facebook"></i>
+                            <i className="fa-brands fa-facebook fa-xl"></i>
                         </Link>
 
                         <Link href={route('index')}
                             className="rounded-md font-bold px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
-                            <i className="fa-brands fa-instagram"></i>
+                            <i className="fa-brands fa-instagram fa-xl"></i>
                         </Link>
 
                         <Link href={route('index')}
                             className="rounded-md font-bold px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
-                            <i className="fa-brands fa-twitter"></i>
+                            <i className="fa-brands fa-twitter fa-xl"></i>
                         </Link>
                     </div>
                 </nav>

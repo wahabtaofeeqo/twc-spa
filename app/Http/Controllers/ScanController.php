@@ -6,18 +6,18 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Card;
+use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
+use Auth;
 
 class ScanController extends Controller
 {
-        /**
+    /**
      * Display the source.
      */
     public function index(Request $request): Response
     {
-        // $models = Outlet::latest()->paginate(10);
         return Inertia::render('Scan', [
-            // 'models' => $models,
             'status' => session('status'),
         ]);
     }
@@ -65,18 +65,21 @@ class ScanController extends Controller
         $amount = $request->price;
         $card = Card::find($request->card_id);
         if($amount > $card->amount || $card->amount - $amount < 0) {
-            return response()->json([
-                'message' => 'Insufficient Balance'
-            ], 400);
+            return redirect()->back()->withErrors([
+                'price' => 'Insufficient fund'
+            ]);
         }
 
         $card->amount = $card->amount - $amount;
         $card->save();
 
-        //
-        return response()->json([
-            'card' => $card,
-            'message' => 'Charged successfully',
+        $user = $request->user();
+        Transaction::create([
+            'amount' => $amount,
+            'user_id' => $card->user_id,
+            'attendant_id' => $user->id
         ]);
+
+        return to_route('scans');
     }
 }

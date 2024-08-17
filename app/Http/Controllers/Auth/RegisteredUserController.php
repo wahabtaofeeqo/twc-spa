@@ -34,13 +34,13 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'code' => 'required|integer',
+            'code' => 'required|string',
             'name' => 'required|string|max:255',
             'card' => 'required|in:Gift,Membership',
-            'amount' => 'required_if:card,Gift|integer',
+            'amount' => 'nullable|required_if:card,Gift|integer',
             'email' => 'required|string|email|max:255|unique:'.User::class,
             'phone' => 'required|string|max:13|min:11|unique:'.User::class,
-            'category' => 'required_if:card,Membership|in:' . join(',', User::$categories),
+            'category' => 'nullable|required_if:card,Membership|in:' . join(',', User::$categories),
         ]);
 
         $card = Card::where('type', $request->card)

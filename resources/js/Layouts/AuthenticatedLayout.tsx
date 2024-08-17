@@ -34,6 +34,9 @@ export default function Authenticated({ auth, header, children, errors = null })
                             <Link href={route('admins')} className={(route().current('admins') ? 'border-l-4 border-sky-500' : '') + ' block hover:bg-gray-700 hover:text-white px-3 py-3 text-sm font-medium'}>
                                 <i className="fas fa-user-tie mr-2"></i> Admins
                             </Link>
+                            <Link href={route('transactions')} className={(route().current('transactions') ? 'border-l-4 border-sky-500' : '') + ' block hover:bg-gray-700 hover:text-white px-3 py-3 text-sm font-medium'}>
+                                <i className="fas fa-money-bill mr-2"></i> Transactions
+                            </Link>
                         </>
                        }
                         <Link href={route('scans')} className={(route().current('scans') ? 'border-l-4 border-sky-500' : '') + ' block hover:bg-gray-700 hover:text-white px-3 py-3 text-sm font-medium'}>
@@ -136,6 +139,9 @@ export default function Authenticated({ auth, header, children, errors = null })
                                     </ResponsiveNavLink>
                                     <ResponsiveNavLink href={route('admins')} active={route().current('admins')}>
                                         Admins
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink href={route('transactions')} active={route().current('transactions')}>
+                                        Transactions
                                     </ResponsiveNavLink>
                                 </>
                             }

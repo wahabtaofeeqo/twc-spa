@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cards', function (Blueprint $table) {
+        Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
-            $table->enum('type', ['Gift', 'Membership']);
             $table->float('amount')->default(0);
-            $table->date('expired_at')->nullable();
             $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('attendant_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('attendant_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cards');
+        Schema::dropIfExists('transactions');
     }
 };
