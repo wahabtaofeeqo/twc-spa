@@ -41,7 +41,9 @@ export default function Scan({auth, csrf}) {
     const submit = (e) => {
         e.preventDefault();
         setProcessing(true);
-
+        setError('');
+        setMessage('');
+        
         axios.post(route('scans.scan'), data).then(res => {
             setCard(res.data.card);
             setProcessing(false);

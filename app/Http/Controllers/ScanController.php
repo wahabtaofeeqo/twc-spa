@@ -31,7 +31,7 @@ class ScanController extends Controller
     {
         $request->validate([
             'card' => 'required|string|in:Gift,Membership',
-            'code' => 'required|integer|exists:cards,code',
+            'code' => 'required|exists:cards,code',
         ]);
 
         $card = Card::where('type', $request->card)

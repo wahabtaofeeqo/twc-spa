@@ -93,4 +93,26 @@ class PagesController extends Controller
             'status' => session('status')
         ]);
     }
+
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $card = $user->card;
+
+        $user->fill([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'category' => $request->category,
+        ]);
+        $user->save();
+
+        $card->code = $request->code;
+        $card->type = $request->card;
+        $card->amount = $request->amount;
+        $card->save();
+
+        //
+        return to_route('users');
+    }
 }

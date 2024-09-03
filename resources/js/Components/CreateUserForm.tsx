@@ -37,7 +37,14 @@ export default function CreateUserForm({onCreated, user}) {
     };
 
     useEffect(() => {
-        if(user) setData(user)
+        if(user) {
+            setData({
+                ...user,
+                card: user.card.type,
+                code: user.card.code,
+                amount: user.card.amount
+            })
+        }
     }, []);
 
     return (
