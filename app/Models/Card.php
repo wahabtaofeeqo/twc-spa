@@ -10,16 +10,26 @@ class Card extends Model
     use HasFactory;
 
     protected $fillable = [
-        'code', 'type', 'user_id', 'amount', 'expired_at'
+        'code', 'type', 'amount', 'expired_at'
     ];
 
-    /**
-     * Get the user that owns the Card
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+   /**
+    * Get all of the users for the Card
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+   public function users()
+   {
+       return $this->hasMany(User::class);
+   }
+
+   /**
+    * Get all of the transacions for the Card
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+   public function transactions()
+   {
+       return $this->hasMany(Transaction::class);
+   }
 }

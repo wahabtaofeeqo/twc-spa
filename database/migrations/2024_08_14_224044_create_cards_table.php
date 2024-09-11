@@ -17,8 +17,8 @@ return new class extends Migration
             $table->enum('type', ['Gift', 'Membership']);
             $table->float('amount')->default(0);
             $table->date('expired_at')->nullable();
-            $table->bigInteger('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->bigInteger('user_id')->unsigned();
+            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

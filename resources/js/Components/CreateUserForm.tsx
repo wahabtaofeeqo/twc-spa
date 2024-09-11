@@ -12,6 +12,9 @@ export default function CreateUserForm({onCreated, user}) {
         name: '',
         email: '',
         phone: '',
+        u_name: '',
+        u_email: '',
+        u_phone: '',
         category: '',
         code: '',
         card: '',
@@ -38,17 +41,32 @@ export default function CreateUserForm({onCreated, user}) {
 
     useEffect(() => {
         if(user) {
-            setData({
-                ...user,
-                card: user.card.type,
-                code: user.card.code,
-                amount: user.card.amount
-            })
+            if(user.is_buyer) {
+                setData({
+                    ...user,
+                    card: user.card.type,
+                    code: user.card.code,
+                    amount: user.card.amount
+                })
+            }
+            else {
+                setData({
+                    ...data,
+                    u_name: user.name,
+                    u_phone: user.phone,
+                    u_email: user.email,
+                    card: user.card.type,
+                    code: user.card.code,
+                    amount: user.card.amount
+                })
+            }
         }
     }, []);
 
     return (
             <form onSubmit={submit}>
+
+                <h4 className='font-bold'>Buyer's Details </h4>
                 <div>
                     <InputLabel value="Name" />
 
@@ -60,7 +78,6 @@ export default function CreateUserForm({onCreated, user}) {
                         autoComplete="name"
                         isFocused={true}
                         onChange={onHandleChange}
-                        required
                     />
 
                     <InputError message={errors.name} className="mt-2" />
@@ -77,7 +94,6 @@ export default function CreateUserForm({onCreated, user}) {
                         className="mt-1 block w-full"
                         autoComplete="username"
                         onChange={onHandleChange}
-                        required
                     />
 
                     <InputError message={errors.email} className="mt-2" />
@@ -94,10 +110,61 @@ export default function CreateUserForm({onCreated, user}) {
                         className="mt-1 block w-full"
                         autoComplete="phone"
                         onChange={onHandleChange}
-                        required
                     />
 
                     <InputError message={errors.phone} className="mt-2" />
+                </div>
+
+                <div className='mt-4'>
+                    <h4 className='font-bold'>User's Details</h4>
+                    <div>
+                        <InputLabel value="Name" />
+
+                        <TextInput
+                            id="u_name"
+                            name="u_name"
+                            type='text'
+                            value={data.u_name}
+                            className="mt-1 block w-full"
+                            autoComplete="name"
+                            isFocused={true}
+                            onChange={onHandleChange}
+                        />
+
+                        <InputError message={errors.u_name} className="mt-2" />
+                    </div>
+
+                    <div className="mt-4">
+                        <InputLabel value="Email" />
+
+                        <TextInput
+                            id="u_email"
+                            type="email"
+                            name="u_email"
+                            value={data.u_email}
+                            className="mt-1 block w-full"
+                            autoComplete="username"
+                            onChange={onHandleChange}
+                        />
+
+                        <InputError message={errors.u_email} className="mt-2" />
+                    </div>
+
+                    <div className="mt-4">
+                        <InputLabel value="Phone" />
+
+                        <TextInput
+                            id="u_phone"
+                            type="tel"
+                            name="u_phone"
+                            value={data.u_phone}
+                            className="mt-1 block w-full"
+                            autoComplete="phone"
+                            onChange={onHandleChange}
+                        />
+
+                        <InputError message={errors.u_phone} className="mt-2" />
+                    </div>
                 </div>
 
                 <div className="mt-4">

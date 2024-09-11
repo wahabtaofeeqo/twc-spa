@@ -19,8 +19,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password', 'expired_at',
-        'phone', 'category', 'type', 'code', 'status'
+        'name', 'email', 'password', 'expired_at', 'card_id',
+        'phone', 'category', 'type', 'code', 'status', 'is_buyer'
     ];
 
     /**
@@ -90,12 +90,12 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the card associated with the User
+     * Get the card that owns the User
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function card()
     {
-        return $this->hasOne(Card::class);
+        return $this->belongsTo(Card::class);
     }
 }

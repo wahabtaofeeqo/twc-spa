@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
-            $table->id();
-            $table->float('amount')->default(0);
-            $table->bigInteger('card_id')->unsigned();
-            $table->bigInteger('attendant_id')->unsigned();
+        Schema::table('users', function (Blueprint $table) {
+            $table->bigInteger('card_id')->nullable()->unsigned();
+            $table->boolean('is_buyer')->nullable()->default(false);
             $table->foreign('card_id')->references('id')->on('cards')->onDelete('cascade');
-            $table->foreign('attendant_id')->references('id')->on('users')->onDelete('cascade');
-            $table->timestamps();
         });
     }
 
@@ -27,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        Schema::table('users', function (Blueprint $table) {
+            //
+        });
     }
 };

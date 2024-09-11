@@ -10,7 +10,7 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'amount', 'user_id', 'attendant_id'
+        'amount', 'card_id', 'attendant_id'
     ];
 
     /**
@@ -31,5 +31,15 @@ class Transaction extends Model
     public function attendant()
     {
         return $this->belongsTo(User::class, 'attendant_id');
+    }
+
+    /**
+     * Get the card that owns the Transaction
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function card()
+    {
+        return $this->belongsTo(Card::class);
     }
 }

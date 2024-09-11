@@ -35,7 +35,10 @@ class ScanController extends Controller
         ]);
 
         $card = Card::where('type', $request->card)
-            ->where('code', $request->code)->with('user')->first();
+            ->where('code', $request->code)
+            ->with([
+                'users', 'transactions',
+                'transactions.card', 'transactions.attendant'])->first();
 
         if(!$card) {
             return response()->json([
@@ -76,7 +79,7 @@ class ScanController extends Controller
         $user = $request->user();
         Transaction::create([
             'amount' => $amount,
-            'user_id' => $card->user_id,
+            'card_id' => $card->id,
             'attendant_id' => $user->id
         ]);
 

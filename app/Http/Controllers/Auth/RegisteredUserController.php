@@ -35,11 +35,14 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'code' => 'required|string',
-            'name' => 'required|string|max:255',
             'card' => 'required|in:Gift,Membership',
             'amount' => 'nullable|required_if:card,Gift|integer',
-            'email' => 'required|string|email|max:255|unique:'.User::class,
-            'phone' => 'required|string|max:13|min:11|unique:'.User::class,
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|string|email|max:255|unique:'.User::class,
+            'phone' => 'nullable|string|max:13|min:11|unique:'.User::class,
+            'u_name' => 'nullable|string|max:255|required_if:name,null',
+            'u_email' => 'nullable|string|email|max:255||required_if:email,null',
+            'u_phone' => 'nullable|string|max:13|min:11|required_if:phone,null',
             'category' => 'nullable|required_if:card,Membership|in:' . join(',', User::$categories),
         ]);
 
@@ -50,34 +53,49 @@ class RegisteredUserController extends Controller
             return redirect()->back()->withErrors(['code' => 'Code is taken already']);
         }
 
-        $date = Carbon::now()->addYear();
-        // $number = User::genCode($request->category);
-
         $payload = $request->all();
+        $date = Carbon::now()->addYear();
         $isMembership = $payload['card'] == 'Membership';
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'category' => $request->category,
-            'password' => Hash::make($request->phone),
-        ]);
-
-        $role = Role::where(['name' => 'customer']);
-        $user->assignRole($role);
-
-        // Card
-        Card::create([
-            'user_id' => $user->id,
+        // Store Card
+        $card = Card::create([
             'code' => $payload['code'],
             'type' => $payload['card'],
             'expired_at' => $isMembership ? $date : null,
             'amount' => $isMembership ? 0 : $payload['amount'],
         ]);
 
-        //
-        event(new Registered($user));
+        // Create Card Buyer
+        if($request->name) {
+            $user = User::create([
+                'is_buyer' => true,
+                'card_id' => $card->id,
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                // 'category' => $request->category,
+                'password' => Hash::make($request->phone),
+            ]);
+            $role = Role::where(['name' => 'customer']);
+            $user->assignRole($role);
+        }
+
+        // Create Card User
+        if($request->u_name) {
+            $user = User::create([
+                'card_id' => $card->id,
+                'name' => $request->u_name,
+                'email' => $request->u_email,
+                'phone' => $request->u_phone,
+                'category' => $request->category,
+                'password' => Hash::make($request->u_phone),
+            ]);
+
+            $role = Role::where(['name' => 'customer']);
+            $user->assignRole($role);
+        }
+
+        // event(new Registered($user));
 
         //
         return back()->with([

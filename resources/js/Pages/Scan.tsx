@@ -10,7 +10,8 @@ import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
-import { useState } from 'react';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
 
 export default function Scan({auth, csrf}) {
 
@@ -29,7 +30,6 @@ export default function Scan({auth, csrf}) {
         price: 0
     });
 
-
     const onHandleChange = (event) => {
         setData(event.target.name, event.target.value);
     };
@@ -43,10 +43,12 @@ export default function Scan({auth, csrf}) {
         setProcessing(true);
         setError('');
         setMessage('');
-        
+
         axios.post(route('scans.scan'), data).then(res => {
             setCard(res.data.card);
-            setProcessing(false);
+            console.log(card);
+
+            setProcessing(false)
         }).catch(err => {
             setProcessing(false);
             setError(err?.response?.data?.message || 'Something went wrong. Please try again');
@@ -85,28 +87,14 @@ export default function Scan({auth, csrf}) {
                 }, 5000);
             },
             onError: e => {
-                console.log(e);
+                // console.log(e);
             }
         });
-
-        // axios.post(route('charge'), payload, {headers}).then(res => {
-        //     let updatedCard = {
-        //         ...card,
-        //         amount: card.amount - chargeData.price
-        //     }
-        //     setCard(updatedCard);
-        //     setMessage('Card successfully charged');
-        //     setTimeout(() => {
-        //         reset();
-        //         setCard(null);
-        //         setCharging(false);
-        //         setProcessing(false);
-        //     }, 5000);
-        // }).catch(err => {
-        //     setProcessing(false);
-        //     setError(err?.response?.data?.message || 'Something went wrong. Please try again');
-        // })
     };
+
+    useEffect(() => {
+        console.log(card);
+    }, [card]);
 
     return (
         <AuthenticatedLayout auth={auth}
@@ -120,13 +108,29 @@ export default function Scan({auth, csrf}) {
                     <p className='mb-10 text-slate-500'>
                         Scan the QR code on the card to verify user's details.
                     </p>
-                    <div className='bg-white p-5 rounded'>
+                    {
+                        card?.users && (
+                            <div className='mb-4 bg-white rounded p-5 md:flex gap-3'>
+                                {
+                                    card.users?.map((user: any, index) => {
+                                       return (
+                                        <div className='basis-2/4' key={index}>
+                                            <h4 className='text-lg mb-3 font-bold'>{user.is_buyer ? "Buyer's" : "User's"} Details:</h4>
+                                            <p>Name: {user.name || 'NA'}</p>
+                                            <p>Phone: {user.phone || 'NA'}</p>
+                                            <p>Email: {user.email || 'NA'}</p>
+                                        </div>
+                                       )
+                                    })
+                                }
+                            </div>
+                        )
+                    }
+                    <div className='bg-white p-5 rounded mb-4'>
                         {
                             card && (
                                 <div>
                                     <h4 className='text-lg mb-3 font-bold'>Card Details</h4>
-                                    <p>Name: {card?.user?.name}</p>
-                                    <p>Phone: {card?.user?.phone}</p>
                                     <p>Type: {card?.type}</p>
                                     {
                                         card.type == 'Membership' && (
@@ -224,6 +228,49 @@ export default function Scan({auth, csrf}) {
                         }
                     </div>
 
+                    {
+                        card?.transactions && (
+                            <div className="bg-white overflow-hidden shadow-sm mx-4 lg:mx-0 rounded">
+                                <div className="p-3 text-gray-900 flex justify-between items-center">
+                                    <h1>Transactions</h1>
+                                </div>
+                                <div className="relative overflow-x-auto">
+                                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                            <tr>
+                                                <th scope="col" className="px-6 py-3">#</th>
+                                                <th scope="col" className="px-6 py-3">Amount</th>
+                                                {/* <th scope="col" className="px-6 py-3">User</th> */}
+                                                <th scope="col" className="px-6 py-3">Attendant</th>
+                                                <th scope="col" className="px-6 py-3">Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                card.transactions.map((model, index) => {
+                                                    return (
+                                                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
+                                                            <td className="px-6 py-4"> {index + 1} </td>
+                                                            <td className="px-6 py-4"> {model.amount} </td>
+                                                            {/* <td className="px-6 py-4"> {model.user.name} </td> */}
+                                                            <td className="px-6 py-4"> {model.attendant.name} </td>
+                                                            <td className="px-6 py-4"> {moment(model.created_at).format('MMMM Do YYYY')} </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+
+                                            {
+                                                card.transactions.length == 0 && (<tr>
+                                                    <td className='text-center pt-5' colSpan={8}>No Records Found</td>
+                                                </tr>)
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )
+                    }
                 </div>
             </div>
         </AuthenticatedLayout>

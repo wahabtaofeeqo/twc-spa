@@ -32,8 +32,8 @@ export default function Dashboard({auth, users, usersCount, expiredCount, outlet
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>} >
 
             <Head title="Dashboard" />
-            <Modal show={modalToggle} onClose={() => onCreated()}>
-                <div className='p-4'>
+            <Modal show={modalToggle} onClose={() => onCreated()} maxWidth='2xl'>
+                <div className='p-4 overflow-auto' style={{height: '650px'}}>
                     <h1 className='mb-4 text-lg font-black'>Create a new Profile</h1>
                     <CreateUserForm onCreated={onCreated} user={user}></CreateUserForm>
                 </div>

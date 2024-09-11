@@ -46,7 +46,7 @@ export default function Transactions({auth, models}) {
                                                 <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
                                                     <td className="px-6 py-4"> {index + 1} </td>
                                                     <td className="px-6 py-4"> {model.amount} </td>
-                                                    <td className="px-6 py-4"> {model.user.name} </td>
+                                                    <td className="px-6 py-4"> {model.card.name} </td>
                                                     <td className="px-6 py-4"> {model.attendant.name} </td>
                                                     <td className="px-6 py-4"> {moment(model.created_at).format('MMMM Do YYYY')} </td>
                                                 </tr>

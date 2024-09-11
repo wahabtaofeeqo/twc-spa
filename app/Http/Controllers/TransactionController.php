@@ -17,7 +17,7 @@ class TransactionController extends Controller
     public function index(Request $request): Response
     {
         $models = Transaction::with([
-            'user', 'attendant'
+            'card', 'attendant'
         ])->latest()->paginate(10);
 
         return Inertia::render('Transactions', [
