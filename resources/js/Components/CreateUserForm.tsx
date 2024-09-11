@@ -3,11 +3,12 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import SelectInput from './SelectInput';
 
 export default function CreateUserForm({onCreated, user}) {
 
+    const [type, setType] = useState('both');
     const { data, setData, post, put, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -40,6 +41,8 @@ export default function CreateUserForm({onCreated, user}) {
     };
 
     useEffect(() => {
+        console.log(type, user);
+
         if(user) {
             if(user.is_buyer) {
                 setData({
@@ -48,6 +51,7 @@ export default function CreateUserForm({onCreated, user}) {
                     code: user.card.code,
                     amount: user.card.amount
                 })
+                setType('buyer')
             }
             else {
                 setData({
@@ -59,6 +63,7 @@ export default function CreateUserForm({onCreated, user}) {
                     code: user.card.code,
                     amount: user.card.amount
                 })
+                setType('user')
             }
         }
     }, []);
@@ -66,106 +71,116 @@ export default function CreateUserForm({onCreated, user}) {
     return (
             <form onSubmit={submit}>
 
-                <h4 className='font-bold'>Buyer's Details </h4>
-                <div>
-                    <InputLabel value="Name" />
+                {
+                    (type == 'both' || type == 'buyer') && (
+                        <>
+                            <h4 className='font-bold'>Buyer's Details </h4>
+                            <div>
+                                <InputLabel value="Name" />
 
-                    <TextInput
-                        id="name"
-                        name="name"
-                        value={data.name}
-                        className="mt-1 block w-full"
-                        autoComplete="name"
-                        isFocused={true}
-                        onChange={onHandleChange}
-                    />
+                                <TextInput
+                                    id="name"
+                                    name="name"
+                                    value={data.name}
+                                    className="mt-1 block w-full"
+                                    autoComplete="name"
+                                    isFocused={true}
+                                    onChange={onHandleChange}
+                                />
 
-                    <InputError message={errors.name} className="mt-2" />
-                </div>
+                                <InputError message={errors.name} className="mt-2" />
+                            </div>
 
-                <div className="mt-4">
-                    <InputLabel value="Email" />
+                            <div className="mt-4">
+                                <InputLabel value="Email" />
 
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={onHandleChange}
-                    />
+                                <TextInput
+                                    id="email"
+                                    type="email"
+                                    name="email"
+                                    value={data.email}
+                                    className="mt-1 block w-full"
+                                    autoComplete="username"
+                                    onChange={onHandleChange}
+                                />
 
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
+                                <InputError message={errors.email} className="mt-2" />
+                            </div>
 
-                <div className="mt-4">
-                    <InputLabel value="Phone" />
+                            <div className="mt-4">
+                                <InputLabel value="Phone" />
 
-                    <TextInput
-                        id="phone"
-                        type="text"
-                        name="phone"
-                        value={data.phone}
-                        className="mt-1 block w-full"
-                        autoComplete="phone"
-                        onChange={onHandleChange}
-                    />
+                                <TextInput
+                                    id="phone"
+                                    type="text"
+                                    name="phone"
+                                    value={data.phone}
+                                    className="mt-1 block w-full"
+                                    autoComplete="phone"
+                                    onChange={onHandleChange}
+                                />
 
-                    <InputError message={errors.phone} className="mt-2" />
-                </div>
+                                <InputError message={errors.phone} className="mt-2" />
+                            </div>
+                        </>
+                    )
+                }
 
-                <div className='mt-4'>
-                    <h4 className='font-bold'>User's Details</h4>
-                    <div>
-                        <InputLabel value="Name" />
+                {
+                    (type == 'both' || type == 'user') && (
+                        <div className='mt-4'>
+                            <h4 className='font-bold'>User's Details</h4>
+                            <div>
+                                <InputLabel value="Name" />
 
-                        <TextInput
-                            id="u_name"
-                            name="u_name"
-                            type='text'
-                            value={data.u_name}
-                            className="mt-1 block w-full"
-                            autoComplete="name"
-                            isFocused={true}
-                            onChange={onHandleChange}
-                        />
+                                <TextInput
+                                    id="u_name"
+                                    name="u_name"
+                                    type='text'
+                                    value={data.u_name}
+                                    className="mt-1 block w-full"
+                                    autoComplete="name"
+                                    isFocused={true}
+                                    onChange={onHandleChange}
+                                />
 
-                        <InputError message={errors.u_name} className="mt-2" />
+                                <InputError message={errors.u_name} className="mt-2" />
+                            </div>
+
+                            <div className="mt-4">
+                                <InputLabel value="Email" />
+
+                                <TextInput
+                                    id="u_email"
+                                    type="email"
+                                    name="u_email"
+                                    value={data.u_email}
+                                    className="mt-1 block w-full"
+                                    autoComplete="username"
+                                    onChange={onHandleChange}
+                                />
+
+                                <InputError message={errors.u_email} className="mt-2" />
+                            </div>
+
+                            <div className="mt-4">
+                                <InputLabel value="Phone" />
+
+                                <TextInput
+                                    id="u_phone"
+                                    type="tel"
+                                    name="u_phone"
+                                    value={data.u_phone}
+                                    className="mt-1 block w-full"
+                                    autoComplete="phone"
+                                    onChange={onHandleChange}
+                                />
+
+                                <InputError message={errors.u_phone} className="mt-2" />
+                            </div>
                     </div>
-
-                    <div className="mt-4">
-                        <InputLabel value="Email" />
-
-                        <TextInput
-                            id="u_email"
-                            type="email"
-                            name="u_email"
-                            value={data.u_email}
-                            className="mt-1 block w-full"
-                            autoComplete="username"
-                            onChange={onHandleChange}
-                        />
-
-                        <InputError message={errors.u_email} className="mt-2" />
-                    </div>
-
-                    <div className="mt-4">
-                        <InputLabel value="Phone" />
-
-                        <TextInput
-                            id="u_phone"
-                            type="tel"
-                            name="u_phone"
-                            value={data.u_phone}
-                            className="mt-1 block w-full"
-                            autoComplete="phone"
-                            onChange={onHandleChange}
-                        />
-
-                        <InputError message={errors.u_phone} className="mt-2" />
-                    </div>
-                </div>
+                    )
+                }
 
                 <div className="mt-4">
                     <InputLabel value="Card Type" />

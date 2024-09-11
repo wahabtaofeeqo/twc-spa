@@ -17,9 +17,11 @@ export default function Scan({auth, csrf}) {
 
     const [card, setCard] = useState<any>(null);
     const [error, setError] = useState<any>('');
+    const [prompt, setPrompt] = useState<any>('');
     const [message, setMessage] = useState<any>('');
     const [isCharging, setCharging] = useState(false);
     const [processing, setProcessing] = useState(false);
+    const [selectedUser, setUser] = useState<any>(null);
 
     const { data, setData, reset } = useForm({
         card: '',
@@ -45,10 +47,8 @@ export default function Scan({auth, csrf}) {
         setMessage('');
 
         axios.post(route('scans.scan'), data).then(res => {
-            setCard(res.data.card);
-            console.log(card);
-
             setProcessing(false)
+            setCard(res.data.card);
         }).catch(err => {
             setProcessing(false);
             setError(err?.response?.data?.message || 'Something went wrong. Please try again');
@@ -57,6 +57,10 @@ export default function Scan({auth, csrf}) {
 
     const charge = (e) => {
         e.preventDefault();
+        if(!selectedUser) {
+            setPrompt('Select the user using the Card');
+            return;
+        }
 
         setError('');
         setMessage('');
@@ -64,11 +68,8 @@ export default function Scan({auth, csrf}) {
 
         let payload = {
             ...chargeData,
-            card_id: card.id
-        }
-
-        let headers: any = {
-            'X-CSRF-TOKEN': csrf
+            card_id: card.id,
+            user_id: selectedUser.id
         }
 
         router.post(route('charge'), payload, {
@@ -82,19 +83,17 @@ export default function Scan({auth, csrf}) {
                 setTimeout(() => {
                     reset();
                     setCard(null);
+                    setPrompt('');
                     setCharging(false);
                     setProcessing(false);
                 }, 5000);
             },
             onError: e => {
-                // console.log(e);
+                setPrompt('');
+                setProcessing(false);
             }
         });
-    };
-
-    useEffect(() => {
-        console.log(card);
-    }, [card]);
+    };;
 
     return (
         <AuthenticatedLayout auth={auth}
@@ -110,19 +109,23 @@ export default function Scan({auth, csrf}) {
                     </p>
                     {
                         card?.users && (
-                            <div className='mb-4 bg-white rounded p-5 md:flex gap-3'>
-                                {
-                                    card.users?.map((user: any, index) => {
-                                       return (
-                                        <div className='basis-2/4' key={index}>
-                                            <h4 className='text-lg mb-3 font-bold'>{user.is_buyer ? "Buyer's" : "User's"} Details:</h4>
-                                            <p>Name: {user.name || 'NA'}</p>
-                                            <p>Phone: {user.phone || 'NA'}</p>
-                                            <p>Email: {user.email || 'NA'}</p>
-                                        </div>
-                                       )
-                                    })
-                                }
+                            <div className='mb-4 bg-white rounded p-5'>
+                                <p className='text-red-500 mb-2'>{prompt}</p>
+                                <div className='md:flex gap-3'>
+                                    {
+                                        card.users?.map((user: any, index) => {
+                                        return (
+                                            <div className={(selectedUser?.id == user.id ? 'border-b-4 border-amber-500' : '') + ' basis-2/4 cursor-pointer pb-2'}
+                                                key={index} onClick={() => setUser(user)}>
+                                                <h4 className='text-lg mb-3 font-bold'>{user.is_buyer ? "Buyer's" : "User's"} Details:</h4>
+                                                <p>Name: {user.name || 'NA'}</p>
+                                                <p>Phone: {user.phone || 'NA'}</p>
+                                                <p>Email: {user.email || 'NA'}</p>
+                                            </div>
+                                        )
+                                        })
+                                    }
+                                </div>
                             </div>
                         )
                     }
@@ -223,7 +226,6 @@ export default function Scan({auth, csrf}) {
                                         </PrimaryButton> */}
                                     </div>
                                 </form>
-
                             )
                         }
                     </div>
@@ -240,7 +242,7 @@ export default function Scan({auth, csrf}) {
                                             <tr>
                                                 <th scope="col" className="px-6 py-3">#</th>
                                                 <th scope="col" className="px-6 py-3">Amount</th>
-                                                {/* <th scope="col" className="px-6 py-3">User</th> */}
+                                                <th scope="col" className="px-6 py-3">User</th>
                                                 <th scope="col" className="px-6 py-3">Attendant</th>
                                                 <th scope="col" className="px-6 py-3">Date</th>
                                             </tr>
@@ -252,7 +254,7 @@ export default function Scan({auth, csrf}) {
                                                         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
                                                             <td className="px-6 py-4"> {index + 1} </td>
                                                             <td className="px-6 py-4"> {model.amount} </td>
-                                                            {/* <td className="px-6 py-4"> {model.user.name} </td> */}
+                                                            <td className="px-6 py-4"> {model.user?.name || 'NA'} </td>
                                                             <td className="px-6 py-4"> {model.attendant.name} </td>
                                                             <td className="px-6 py-4"> {moment(model.created_at).format('MMMM Do YYYY')} </td>
                                                         </tr>

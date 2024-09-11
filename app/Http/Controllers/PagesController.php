@@ -96,16 +96,43 @@ class PagesController extends Controller
 
     public function updateUser(Request $request, $id)
     {
+        $request->validate([
+            'code' => 'required|string',
+            'card' => 'required|in:Gift,Membership',
+            'amount' => 'nullable|required_if:card,Gift|integer',
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|string|email|max:255|unique:'.User::class,
+            'phone' => 'nullable|string|max:13|min:11|unique:'.User::class,
+            'u_name' => 'nullable|string|max:255|required_if:name,null',
+            'u_email' => 'nullable|string|email|max:255||required_if:email,null',
+            'u_phone' => 'nullable|string|max:13|min:11|required_if:phone,null',
+            'category' => 'nullable|required_if:card,Membership|in:' . join(',', User::$categories),
+        ]);
+
         $user = User::findOrFail($id);
         $card = $user->card;
 
-        $user->fill([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'category' => $request->category,
-        ]);
-        $user->save();
+        // Update Card User details
+        if($request->u_name) {
+            $user->fill([
+                'name' => $request->u_name,
+                'email' => $request->u_email,
+                'phone' => $request->u_phone,
+                'category' => $request->category,
+            ]);
+
+            $user->save();
+        }
+        else {
+            $user->fill([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'category' => $request->category,
+            ]);
+
+            $user->save();
+        }
 
         $card->code = $request->code;
         $card->type = $request->card;

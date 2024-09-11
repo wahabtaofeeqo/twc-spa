@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Card;
+use App\Models\User;
 use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
 use Auth;
@@ -37,8 +38,8 @@ class ScanController extends Controller
         $card = Card::where('type', $request->card)
             ->where('code', $request->code)
             ->with([
-                'users', 'transactions',
-                'transactions.card', 'transactions.attendant'])->first();
+                'users', 'transactions', 'transactions.user',
+                'transactions.card',  'transactions.attendant'])->first();
 
         if(!$card) {
             return response()->json([
@@ -63,6 +64,7 @@ class ScanController extends Controller
         $request->validate([
             'price' => 'required|numeric',
             'card_id' => 'required|integer|exists:cards,id',
+            'user_id' => 'required|integer|exists:users,id',
         ]);
 
         $amount = $request->price;
@@ -77,10 +79,13 @@ class ScanController extends Controller
         $card->save();
 
         $user = $request->user();
+        $owner = User::find($request->user_id);
+
         Transaction::create([
             'amount' => $amount,
             'card_id' => $card->id,
-            'attendant_id' => $user->id
+            'user_id' => $owner->id,
+            'attendant_id' => $user->id,
         ]);
 
         return to_route('scans');

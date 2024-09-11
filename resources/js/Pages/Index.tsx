@@ -8,7 +8,7 @@ const Index = () => {
         <div className="min-h-screen bg-amber-100">
             <div className="max-w-7xl mx-auto">
                 <nav className="flex items-center justify-between">
-                    <Link href="route('login')"
+                    <Link href="/"
                         className="rounded-md px-3 flex items-center gap-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
                         <ApplicationLogo className="" />
                     </Link>
@@ -16,17 +16,17 @@ const Index = () => {
                     <div>
                         <Link href={route('index')}
                             className="rounded-md font-bold px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
-                            <i className="fa-brands fa-facebook fa-xl"></i>
+                            <i className="fa-brands fa-facebook fa-lg"></i>
                         </Link>
 
                         <Link href={route('index')}
                             className="rounded-md font-bold px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
-                            <i className="fa-brands fa-instagram fa-xl"></i>
+                            <i className="fa-brands fa-instagram fa-lg"></i>
                         </Link>
 
                         <Link href={route('index')}
                             className="rounded-md font-bold px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
-                            <i className="fa-brands fa-twitter fa-xl"></i>
+                            <i className="fa-brands fa-twitter fa-lg"></i>
                         </Link>
                     </div>
                 </nav>

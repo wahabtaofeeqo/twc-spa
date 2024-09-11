@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->float('amount')->default(0);
+            $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('card_id')->unsigned();
             $table->bigInteger('attendant_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('card_id')->references('id')->on('cards')->onDelete('cascade');
             $table->foreign('attendant_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
