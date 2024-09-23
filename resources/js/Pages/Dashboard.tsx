@@ -2,7 +2,7 @@ import CreateUserForm from '@/Components/CreateUserForm';
 import DangerButton from '@/Components/DangerButton';
 import Modal from '@/Components/Modal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function Dashboard({auth, users, usersCount, expiredCount, outletCount, userStats}) {
@@ -41,7 +41,16 @@ export default function Dashboard({auth, users, usersCount, expiredCount, outlet
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
+                   {
+                    !auth.user?.password_reset_at && (
+                        <div className='p-3 bg-yellow-100 mb-4 rounded'>
+                            <p>
+                                You need to change your default password.
+                                <Link href={route('profile.edit')} className='ps-3 text-blue-400'>Click here</Link>
+                            </p>
+                        </div>
+                    )
+                   }
                     <div className='lg:flex gap-4'>
                         <div className='text-gray-900 mx-4 lg:mx-0 bg-white p-3 basis-1/3 shadow-sm rounded mb-4 flex justify-between items-center'>
                             <div>

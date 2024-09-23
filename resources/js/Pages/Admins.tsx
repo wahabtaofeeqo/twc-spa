@@ -3,7 +3,7 @@ import DangerButton from '@/Components/DangerButton';
 import Modal from '@/Components/Modal';
 import PageLink from '@/Components/PageLink';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function Admins({auth, users, adminsCount}) {
@@ -14,6 +14,12 @@ export default function Admins({auth, users, adminsCount}) {
         setModalToggle(false)
     }
 
+    const onClick = (user) => {
+        if(confirm(`Reset ${user.name} Password to default?`)) {
+           router.get(`/dashboard/users/reset/${user.id}`);
+        }
+    }
+
     return (
         <AuthenticatedLayout auth={auth}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>} >
@@ -21,7 +27,7 @@ export default function Admins({auth, users, adminsCount}) {
             <Head title="Admins" />
             <Modal show={modalToggle} onClose={() => setModalToggle(false)}>
                 <div className='p-4'>
-                    <h1 className='mb-4'>Add System Admin</h1>
+                    <h1 className='mb-4'>Add Admin</h1>
                     <CreateAdminForm onCreated={onCreated}></CreateAdminForm>
                 </div>
             </Modal>
@@ -52,7 +58,7 @@ export default function Admins({auth, users, adminsCount}) {
                                         <th scope="col" className="px-6 py-3">Name</th>
                                         <th scope="col" className="px-6 py-3">Email</th>
                                         <th scope="col" className="px-6 py-3">Phone</th>
-                                        {/* <th scope="col" className="px-6 py-3">Code</th> */}
+                                        <th scope="col" className="px-6 py-3">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -66,6 +72,11 @@ export default function Admins({auth, users, adminsCount}) {
                                                     </td>
                                                     <td className="px-6 py-4"> {user.email} </td>
                                                     <td className="px-6 py-4"> {user.phone} </td>
+                                                    <td className="px-6 py-4">
+                                                        <button onClick={() => onClick(user)} className={'bg-amber-500 px-2 py-1 text-white rounded'}>
+                                                            <i className="fa-solid fa-lock-open"></i>
+                                                        </button>
+                                                    </td>
                                                     {/* <td className="px-6 py-4"> {user.code} </td> */}
                                                 </tr>
                                             )

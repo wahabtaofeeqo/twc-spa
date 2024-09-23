@@ -21,6 +21,7 @@ class PasswordController extends Controller
         ]);
 
         $request->user()->update([
+            'password_reset_at' => now(),
             'password' => Hash::make($validated['password']),
         ]);
 

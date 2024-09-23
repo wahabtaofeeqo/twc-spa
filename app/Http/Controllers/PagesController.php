@@ -142,4 +142,16 @@ class PagesController extends Controller
         //
         return to_route('users');
     }
+
+    public function reset(Request $request): RedirectResponse
+    {
+        $user = User::find($request->id);
+
+        $request->user()->update([
+            'password_reset_at' => null,
+            'password' => Hash::make($user->phone),
+        ]);
+
+        return back();
+    }
 }

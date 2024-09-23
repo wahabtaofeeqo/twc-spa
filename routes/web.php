@@ -8,6 +8,7 @@ use Inertia\Inertia;
 Route::get('/', 'PagesController@index')->name('index');
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/users/reset/{id}', 'PagesController@reset');
     Route::get('/users', 'PagesController@users')->name('users');
     Route::get('/users/confirm/{id}', 'PagesController@confirm');
     Route::get('/admins', 'PagesController@admins')->name('admins');

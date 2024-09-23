@@ -24,16 +24,8 @@ export default function Users({auth, users, userStats, expiredCount, usersCount}
     }
 
     const onClick = (user, edit = false) => {
-        if(edit) {
-            setUser(user);
-            setModalToggle(true)
-        }
-        else {
-            if(user.status == 'Confirmed') return;
-            if(confirm(`Confirm ${user.name}?`)) {
-                router.get(`/users/confirm/${user.id}`);
-            }
-        }
+        setUser(user);
+        setModalToggle(true)
     }
 
     return (
@@ -156,9 +148,7 @@ export default function Users({auth, users, userStats, expiredCount, usersCount}
                                                 <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
                                                     <td className="px-6 py-4">{index + 1}</td>
                                                     <td className="px-6 py-4">{user.name}</td>
-                                                    {/* <td className="px-6 py-4"> {user.email} </td> */}
                                                     <td className="px-6 py-4"> {user.phone} </td>
-                                                    {/* <td className="px-6 py-4"> {user.card?.code || 'NA'} </td> */}
                                                     <td className="px-6 py-4">{user.card?.type}</td>
                                                     <td className="px-6 py-4">{user.category || 'NA'}</td>
                                                     {
